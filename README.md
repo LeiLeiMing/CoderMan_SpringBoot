@@ -1,8 +1,8 @@
 # CoderMan_SpringBoot
 使用springboot写的一个论坛项目,Maven管理项目
-# 使用springboot,mybatis,spring,springmvc,thymeleaf
-# 实现的一个社区论坛,主要用于学习.
-# 下面我说一个主要的功能
+### 使用springboot,mybatis,spring,springmvc,thymeleaf实现的一个社区论坛,主要用于学习.
+
+## 下面我说一个主要的功能:
 ```java
 1.登入使用github授权登入
 2.登入之后可以在论坛中提问题,可以回答他人的问题
