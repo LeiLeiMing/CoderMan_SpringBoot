@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" th:href="@{/css/iconfont.css}">
+    <link rel="stylesheet" href="webjars/bootstrap/3.3.5/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.5/css/bootstrap.min.css}"/>
+    <script src="webjars/jquery/3.1.1/jquery.min.js" th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+    <script src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"
+            th:src="@{/webjars/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<!--引入导航条-->
+<div th:insert="~{navbar :: navbar}"></div>
+<div class="container">
+    <!--右边部分-->
+    <div class="col-lg-3 col-md-3 col-sm-12">
+        <!--发起人信息-->
+        <h6 style="color:#333;">用户信息:</h6>
+        <img class="img-rounded" width="40px;" th:src="${people.avatarUrl}">
+            <br>
+            来源:
+        <small style="color: #155faa;">github用户</small> &nbsp;&nbsp;
+        <div>
+            <small>昵称:</small>
+            <span style="font-size:12px;color: #155faa;" th:text="${people.name}"></span><br>
+            <small>公司:</small>
+            <span style="font-size:12px;color: #155faa;" th:text="${people.company}"></span><br>
+            <small>所在地:</small>
+            <span style="font-size:12px;color: #155faa;" th:text="${people.location}"></span><br>
+            <small>个人简介:</small>
+            <span style="font-size:12px;color: #155faa;" th:text="${people.bio}"></span><br>
+        </div>
+        <hr th:height="1px">
+    </div>
+    <div class="col-lg-9 col-md-12 col-sm-12">
+        <h6>他的问题:</h6>
+        <div th:each="question:${page.list}" class="media question">
+            <div class="media-left">
+                <a th:href="@{/people/}+${question.creator}">
+                    <img th:class="img-rounded" width="30px" class="media-object" th:src="${question.user.avatarUrl}"
+                         th:title="${question.user.name}">
+                </a>
+            </div>
+            <div class="media-body">
+                <h3 class="media-heading">
+                    <a style="line-height: 20px;font-size: 16px;font-weight: 500;" th:href="'/question/'+${question.id}" th:text="${question.title}"></a>
+                </h3>
+                <span style="font-size: 12px;color: #999999">
+                        <span th:text="${question.user.name}"></span> • 发布了置顶文章 •
+                        <span th:text="${question.commentCount}"></span>人评论 •
+                        <span th:text="${question.viewCount}"></span>次浏览 •
+                        发布时间:<span th:text="${#dates.format(question.gmtCreate, 'yyyy-MM-dd hh:mm:ss')}"></span>
+                    </span>
+            </div>
+        </div>
+        <div class="container">
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>[[${siledername}]]</title>
+    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" th:href="@{/css/iconfont.css}">
+    <link rel="stylesheet" href="webjars/bootstrap/3.3.5/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.5/css/bootstrap.min.css}"/>
+    <script src="webjars/jquery/3.1.1/jquery.min.js" th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+    <script src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"
+            th:src="@{/webjars/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+
+</head>
+<body>
+<!--引入导航条-->
+<div th:insert="~{navbar :: navbar}"></div>
+<!--内容部分-->
+<div class="container main">
+    <div class="row" style="margin-right:10px;margin-left: 10px;">
+        <div class="col-lg-9 col-md-12 col-sm-12">
+            <!--我的问题列表-->
+            <h4 style="margin-top: 20px;"><span class="glyphicon glyphicon-list"></span>[[${siledername}]]</h4>
+            <hr>
+            <div th:if="${page!=null}">
+                <div th:each="question:${page.list}" class="media question">
+                    <div class="media-left">
+                        <a href="#">
+                            <img th:class="img-rounded" width="40px" class="media-object"
+                                 th:src="${question.user.avatarUrl}"
+                                 alt="...">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">
+                            <a style="font-size: 14px" th:href="@{/question/}+${question.id}"
+                               href="https://elasticsearch.cn/article/13422"
+                               th:text="${question.title}"></a>
+                        </h4>
+                        <span style="font-size: 12px;color: #999999">
+                        <span th:text="${question.user.name}"></span>回复了问题 • 发布了置顶文章 •
+                        <span th:text="${question.commentCount}"></span>人评论 •
+                        <span th:text="${question.viewCount}"></span>次浏览 •
+                        发布时间:<span th:text="${#dates.format(question.gmtCreate, 'yyyy-MM-dd hh:mm:ss')}"></span>
+                            <div style="float: right;font-size: 12px;cursor: pointer">
+                                <a style="color: #777;" th:href="@{/publish/}+${question.id}"
+                                   class="iconfont icon-bianji">编辑</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <a style="color: #777;" th:href="@{/deleteQuestion/}+${question.id}"
+                                   class="iconfont icon-shanchu1">删除</a></div>
+                    </span>
+                    </div>
+                </div>
+                <div class="container">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li th:if="${page.isHasPreviousPage()}">
+                                <a th:href="@{/profile/questions/(pageNo=${page.prePage})}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li th:each="nav:${page.navigatepageNums}" th:class="${page.pageNum==nav? 'active':'' }">
+                                <a th:href="@{/profile/questions/(pageNo=${nav})}">[[${nav}]]<span class="sr-only">(current)</span></a>
+                            </li>
+                            <li th:if="${page.isHasNextPage()}">
+                                <a th:href="@{/profile/questions/(pageNo=${page.nextPage})}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+
+            </div>
+            <!--我的通知-->
+            <div class="info_wrapper" th:if="${notification!=null}">
+                <a th:href="@{/deleteReaded}">删除已读</a>
+                <h5 th:if="${silderbar=='replies'}" th:each="tip:${notification}">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <img width="30" class="img-rounded" th:src="${tip.getNotifier().getAvatarUrl()}"/>
+                                [[${tip.getNotifier().getName()}]]
+                                <small>[[${tip.getCommentNotificationType().getName()}]]</small>
+                                <span style="float: right;font-size: 14px;" class="iconfont icon-shanchu2">
+                                    <a th:href="@{/deletenotification/(id=${tip.getId()})}">删除</a>
+                                </span>
+
+                                :
+                            </div>
+                            <div class="panel-body">
+                                <!--回复问题通知-->
+                                <a th:href="@{/read/(id=${tip.getId()})}+'&status='+${tip.getStatus()}"
+                                   th:if="${tip.getCommentNotificationType().getCode()==1}"
+                                   th:text="${tip.getItem().getTitle()}"></a>
+                                <!--回复评论通知-->
+                                <a th:href="@{/read/(id=${tip.getId()})}+'&status='+${tip.getStatus()}"
+                                   th:if="${tip.getCommentNotificationType().getCode()==2}"
+                                   th:text="${tip.getItem().getContent()}"></a>
+                                <!--点赞评论通知-->
+                                <a th:href="@{/read/(id=${tip.getId()})}+'&status='+${tip.getStatus()}"
+                                   th:if="${tip.getCommentNotificationType().getCode()==3}"
+                                   th:text="${tip.getItem().getContent()}"></a>
+                                <!--点赞问题通知-->
+                                <a th:href="@{/read/(id=${tip.getId()})}+'&status='+${tip.getStatus()}"
+                                   th:if="${tip.getCommentNotificationType().getCode()==4}"
+                                   th:text="${tip.getItem().getTitle()}"></a>
+                                <span style="float: right;" th:if="${tip.getStatus()==0}">
+                                <span><span class="iconfont icon-info-read"></span>已读</span>
+                            </span>
+                                <span style="float: right;" th:if="${tip.getStatus()==1}">
+                                    <span class="label label-danger">未读</span>
+                                </span>
+                                <span style="color:#303030;float:right;font-size:12px;margin-right: 10px;" th:text="${#dates.format(tip.gmtCreate, 'yyyy年MM月dd日 hh:mm:ss')}"></span>
+                            </div>
+
+                        </div>
+
+                </h5>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 rightwrapper" style="height: 800px; padding-top: 20px">
+            <div class="list-group">
+                <a th:href="@{/profile/questions}" class="list-group-item"
+                   th:classappend="${silderbar=='questions'? 'active':''}">
+                    我的问题
+                </a>
+                <a th:href="@{/profile/replies}" class="list-group-item"
+                   th:classappend="${silderbar=='replies'? 'active':''}">
+                    我的通知
+                    <span class="badge">[[${unreadcount}]]</span>
+                </a>
+                <a href="#" class="list-group-item">我的收藏</a>
+                <a href="#" class="list-group-item">我的关注</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

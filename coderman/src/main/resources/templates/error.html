@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>[[${errormessage}]]</title>
+    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="webjars/bootstrap/3.3.5/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/3.3.5/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/editormd.preview.css}"/>
+</head>
+<body>
+<!--引入导航条-->
+<div th:insert="~{navbar :: navbar}"></div>
+<div class="container">
+    <div class="jumbotron">
+        <br>
+        <br>
+        <br>
+        <h1>出错了~, 鸭!</h1><br>
+        <br>
+        <p th:text="${errormessage}">...</p>
+
+        <br>
+        <p><a class="btn btn-primary btn-lg" th:href="@{/}" role="button">返回首页</a></p>
+    </div>
+</div>
+
+<script src="webjars/jquery/3.1.1/jquery.min.js" th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+<script src="webjars/bootstrap/3.3.5/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

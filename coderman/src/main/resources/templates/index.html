@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CoderMan首页</title>
+    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" th:href="@{/css/iconfont.css}">
+    <link rel="stylesheet" href="webjars/bootstrap/3.3.5/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.5/css/bootstrap.min.css}"/>
+    <script src="webjars/jquery/3.1.1/jquery.min.js" th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+    <script src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"
+            th:src="@{/webjars/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+
+</head>
+<body>
+<!--引入导航条-->
+<div th:insert="~{navbar :: navbar}"></div>
+<!--内容部分-->
+<div class="container main">
+    <div class="row" style="margin-right:10px;margin-left: 10px;">
+        <div class="col-lg-9 col-md-12 col-sm-12" >
+            <h4 style="margin-top: 20px;"><span class="glyphicon glyphicon-list"></span>发现</h4>
+            <hr>
+            <div th:each="question:${page.list}" class="media question" style="position: relative;border-right: 1px solid #eee;">
+                <div class="media-left">
+                    <a th:href="@{/people/}+${question.creator}">
+                        <img style="margin-top: 3px;margin-right: 10px;" th:class="img-rounded" width="55px" class="media-object" th:src="${question.user.avatarUrl}"
+                             th:title="${question.user.name}">
+                    </a>
+                </div>
+                <div class="media-body" >
+                    <h3 class="media-heading">
+                        <a style="line-height: 20px;font-family: 'Courier New'; font-size: 17px;font-weight: 600;" th:href="'/question/'+${question.id}" th:text="${question.title}"></a>
+                        <!--<span th:if="${question.viewCount>=100}" style="color: #f40;font-size: 18px;" class="iconfont icon-remen"></span>-->
+                    </h3>
+                    <span style="font-size: 13px;color: #999999">
+                        <span th:text="${question.user.name}"></span> • 发布了置顶文章 •
+                        <span style="font-size: 13px;" class="iconfont icon-pinglun1" th:text="${question.commentCount}"></span>人评论 •
+                        <span th:text="${question.viewCount}"></span>次浏览 •
+                        <span th:text="${question.likeCount}"></span>人点赞 •
+                        发布时间:<span th:text="${#dates.format(question.gmtCreate, 'yyyy-MM-dd hh:mm:ss')}"></span>
+                    </span>
+                    <span style="float: right;color: #999999" th:text="${question.tag}"></span>
+                </div>
+                <span th:if="${question.viewCount>=50}" style="font-size: 40px;color:red; position: absolute;top: 5px;right: 0px;" class="iconfont icon-hot"></span>
+            </div>
+           <div class="container">
+               <nav aria-label="Page navigation">
+                   <ul class="pagination">
+                       <li th:if="${page.isHasPreviousPage()}">
+                           <a th:href="@{/(pageNo=${page.prePage},search=${search})}" aria-label="Previous">
+                               <span aria-hidden="true">&laquo;</span>
+                           </a>
+                       </li>
+                       <li th:each="nav:${page.navigatepageNums}" th:class="${page.pageNum==nav? 'active':'' }">
+                           <a th:href="@{/(pageNo=${nav},search=${search})}">[[${nav}]]<span class="sr-only" >(current)</span></a>
+                       </li>
+                       <li th:if="${page.isHasNextPage()}">
+                           <a th:href="@{/(pageNo=${page.nextPage},search=${search})}" aria-label="Next">
+                               <span aria-hidden="true">&raquo;</span>
+                           </a>
+                       </li>
+                   </ul>
+               </nav>
+
+           </div>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 rightwrapper">
+
+            <!--<img th:width="100" th:src="@{/images/pic_logo_1083b8804.png}">-->
+            <!--<img th:width="100" th:src="@{/images/u=1996801061,833160828&fm=26&gp=0.jpg}">-->
+            <h4>扫一扫:<span class="iconfont icon-QR"></span></h4>
+            <hr>
+           <img th:width="100" th:src="@{/images/wx1.png}">&nbsp;&nbsp;
+            <img th:width="100" th:src="@{/images/zf.png}">
+            <hr>
+            <ul class="list-group">
+                <li class="list-group-item"><span class="iconfont icon-touxiang"></span>&nbsp;昵称:小章鱼</li>
+                <li class="list-group-item"><span class="iconfont icon-qq"></span>&nbsp;qq:3053161401</li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-phone-alt"></span>&nbsp;电话:15079437282</li>
+                <li class="list-group-item"><span class="iconfont icon-weidudianjihou"></span>&nbsp;邮件:3053161401@gmail.com
+                </li>
+                <li class="list-group-item"><span style="font-size: 19px;" class="iconfont icon-weibo"></span>&nbsp;微博:30531614@webozhang
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

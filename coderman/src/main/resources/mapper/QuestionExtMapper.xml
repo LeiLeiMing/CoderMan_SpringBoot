@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhangyu.coderman.dao.QuestionExtMapper">
+    <resultMap id="question_user_map" type="com.zhangyu.coderman.modal.Question">
+        <id column="qid" property="id"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="qct" property="gmtCreate"/>
+        <result column="qmt" property="gmtModified"/>
+        <result column="tag" property="tag"/>
+        <result column="creator" property="creator"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="like_count" property="likeCount"/>
+        <result column="comment_count" property="commentCount"/>
+        <association javaType="com.zhangyu.coderman.modal.User" property="user">
+            <result column="account" property="accountId"/>
+            <result column="name" property="name"/>
+            <result column="account_id" property="accountId"/>
+            <result column="token" property="token"/>
+            <result column="uct" property="gmtCreate"/>
+            <result column="umt" property="gmtModified"/>
+            <result column="avatar_url" property="avatarUrl"/>
+            <result column="bio" property="bio"/>
+            <result column="location" property="location"/>
+            <result column="company" property="company"/>
+        </association>
+
+    </resultMap>
+    <resultMap id="question_user_map_userid" type="com.zhangyu.coderman.modal.Question">
+        <id column="qid" property="id"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="qct" property="gmtCreate"/>
+        <result column="qmt" property="gmtModified"/>
+        <result column="tag" property="tag"/>
+        <result column="creator" property="creator"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="like_count" property="likeCount"/>
+        <result column="comment_count" property="commentCount"/>
+        <association javaType="com.zhangyu.coderman.modal.User" property="user">
+            <result column="account" property="accountId"/>
+            <result column="name" property="name"/>
+            <result column="account_id" property="accountId"/>
+            <result column="token" property="token"/>
+            <result column="uct" property="gmtCreate"/>
+            <result column="umt" property="gmtModified"/>
+            <result column="avatar_url" property="avatarUrl"/>
+            <result column="bio" property="bio"/>
+            <result column="location" property="location"/>
+            <result column="company" property="company"/>
+        </association>
+
+    </resultMap>
+    <select id="findQuestionWithUserById" resultMap="question_user_map_userid"
+            resultType="com.zhangyu.coderman.modal.Question">
+    SELECT q.id qid, q.title,q.description,q.gmt_create qct ,q.gmt_modified qmt,tag,q.creator,q.view_count,q.like_count,q.comment_count
+    ,u.id uid,u.account_id account,u.name,u.token,
+    u.gmt_create uct,u.gmt_modified umt,u.avatar_url,u.bio,u.location,u.company
+    FROM question q ,USER u
+    WHERE q.creator=u.id and q.id=#{id}
+    ORDER  by qct DESC
+  </select>
+    <select id="listQuestionWithUserByUserId" resultMap="question_user_map_userid"
+            resultType="com.zhangyu.coderman.modal.Question">
+    SELECT q.id qid, q.title,q.description,q.gmt_create qct ,q.gmt_modified qmt,tag,q.creator,q.view_count,q.like_count,q.comment_count
+    ,u.id uid,u.account_id account,u.name,u.token,
+    u.gmt_create uct,u.gmt_modified umt,u.avatar_url,u.bio,u.location,u.company
+    FROM question q ,USER u
+    WHERE q.creator=u.id and q.creator=#{id}
+    ORDER  by qct DESC
+  </select>
+    <select id="listQuestionWithUser" resultMap="question_user_map" resultType="com.zhangyu.coderman.modal.Question">
+    SELECT q.id qid, q.title,q.description,q.gmt_create qct ,q.gmt_modified qmt,tag,q.creator,q.view_count,q.like_count,q.comment_count
+    ,u.id uid,u.account_id account,u.name,u.token,
+    u.gmt_create uct,u.gmt_modified umt,u.avatar_url,u.bio,u.location,u.company
+    FROM question q ,USER u
+    WHERE q.creator=u.id
+    ORDER  by qct DESC
+  </select>
+
+    <select id="listQuestionWithUserBySearch" resultMap="question_user_map"
+            resultType="com.zhangyu.coderman.modal.Question">
+        SELECT q.id qid, q.title,q.description,q.gmt_create qct ,q.gmt_modified
+        qmt,tag,q.creator,q.view_count,q.like_count,q.comment_count
+        ,u.id uid,u.account_id account,u.name,u.token,
+        u.gmt_create uct,u.gmt_modified umt,u.avatar_url,u.bio,u.location,u.company
+        FROM question q ,USER u
+        <where>
+            q.creator=u.id
+            <if test="search!=null and search!=''">
+                and title regexp #{search}
+            </if>
+            ORDER by qct DESC
+        </where>
+
+
+    </select>
+
+</mapper>
