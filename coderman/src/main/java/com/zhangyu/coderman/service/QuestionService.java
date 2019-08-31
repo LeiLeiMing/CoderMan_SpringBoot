@@ -2,6 +2,9 @@ package com.zhangyu.coderman.service;
 
 import com.github.pagehelper.PageInfo;
 import com.zhangyu.coderman.dto.CommentDTO;
+import com.zhangyu.coderman.dto.QuestionDTO;
+import com.zhangyu.coderman.dto.QuestionQueryDTO;
+import com.zhangyu.coderman.dto.ResultTypeDTO;
 import com.zhangyu.coderman.modal.Question;
 
 import java.util.List;
@@ -18,7 +21,7 @@ public interface QuestionService {
 
     void updateQuestion(Question question);
 
-    void saveOrUpdate(Question question,Integer userid);
+    ResultTypeDTO saveOrUpdate(Question question, Integer userid);
 
     List<Question> relatedQuestions(Question question);
 
@@ -26,5 +29,12 @@ public interface QuestionService {
 
     List<CommentDTO> findQuestionComments(Integer id);
 
-    PageInfo<Question> getPageBySearch(String search, Integer pageNo, Integer pageSize);
+    PageInfo<Question> getPageBySearch(QuestionQueryDTO questionQueryDTO, Integer pageNo, Integer pageSize);
+
+
+    List<QuestionDTO> findNewQuestion(int i);
+
+    PageInfo<Question> findQuestionsByCategory(Integer pageNo, Integer pageSize, Integer categoryVal);
+
+    List<QuestionDTO> findRecommendQuestions(int pageno, int pagesize);
 }

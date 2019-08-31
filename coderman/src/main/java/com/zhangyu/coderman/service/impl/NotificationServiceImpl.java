@@ -1,13 +1,11 @@
 package com.zhangyu.coderman.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.zhangyu.coderman.dao.CommentMapper;
 import com.zhangyu.coderman.dao.NotificationMapper;
 import com.zhangyu.coderman.dao.QuestionMapper;
 import com.zhangyu.coderman.dao.UserMapper;
 import com.zhangyu.coderman.dto.NotificationDTO;
-import com.zhangyu.coderman.exception.CustomizeException;
 import com.zhangyu.coderman.modal.*;
 import com.zhangyu.coderman.myenums.CommentNotificationType;
 import com.zhangyu.coderman.service.NotificationService;
@@ -51,25 +49,31 @@ public class NotificationServiceImpl implements NotificationService {
                     User user = userMapper.selectByPrimaryKey(notfiterId);
                     //封装信息
                     CreateNotificationDTOCommentQuestion(notificationDTOlist, notification, notificationDTO, user);
-                } else if(notification.getType()==CommentNotificationType.COMMENT_REPLY.getCode()) {
+                } else if (notification.getType() == CommentNotificationType.COMMENT_REPLY.getCode()) {
                     NotificationDTO<Comment> notificationDTO = new NotificationDTO();
                     Long notifier = notification.getNotifier();
                     int notfiterId = notifier.intValue();
                     User user = userMapper.selectByPrimaryKey(notfiterId);
                     //封装信息
                     CreateNotificationDTOCommentReply(notificationDTOlist, notification, notificationDTO, user);
-                }else  if(notification.getType()==CommentNotificationType.COMMENT_Like.getCode()){
+                } else if (notification.getType() == CommentNotificationType.COMMENT_Like.getCode()) {
                     NotificationDTO<Comment> notificationDTO = new NotificationDTO();
                     Long notifier = notification.getNotifier();
                     int notfiterId = notifier.intValue();
                     User user = userMapper.selectByPrimaryKey(notfiterId);
-                    CreateNotificationDTOCommentLike(notificationDTOlist, notification,notificationDTO, user);
-                }else  if(notification.getType()==CommentNotificationType.LIKE_QUESTION.getCode()){
+                    CreateNotificationDTOCommentLike(notificationDTOlist, notification, notificationDTO, user);
+                } else if (notification.getType() == CommentNotificationType.LIKE_QUESTION.getCode()) {
                     NotificationDTO<Question> notificationDTO = new NotificationDTO();
                     Long notifier = notification.getNotifier();
                     int notfiterId = notifier.intValue();
                     User user = userMapper.selectByPrimaryKey(notfiterId);
-                    CreateNotificationDTOQuestionLike(notificationDTOlist, notification,notificationDTO, user);
+                    CreateNotificationDTOQuestionLike(notificationDTOlist, notification, notificationDTO, user);
+                } else if (notification.getType() == CommentNotificationType.FOLLOWING.getCode()) {
+                    NotificationDTO<User> notificationDTO = new NotificationDTO();
+                    Long notifier = notification.getNotifier();
+                    int notfiterId = notifier.intValue();
+                    User user = userMapper.selectByPrimaryKey(notfiterId);
+                    CreateNotificationDTOFollowing(notificationDTOlist, notification, notificationDTO, user);
                 }
 
             }
@@ -93,6 +97,24 @@ public class NotificationServiceImpl implements NotificationService {
         notificationDTO.setGmtCreate(notification.getGmtCreate());
         notificationDTO.setCommentNotificationType(CommentNotificationType.COMMENT_REPLY);
         notificationDTO.setItem(commentMapper.selectByPrimaryKey(notification.getOutterId()));
+        notificationDTOlist.add(notificationDTO);
+    }
+
+    /**
+     * 封装关注的通知
+     *
+     * @param notificationDTOlist
+     * @param notification
+     * @param notificationDTO
+     * @param user
+     */
+    private void CreateNotificationDTOFollowing(List<NotificationDTO> notificationDTOlist, Notification notification, NotificationDTO<User> notificationDTO, User user) {
+        notificationDTO.setId(notification.getId());
+        notificationDTO.setNotifier(user);
+        notificationDTO.setStatus(notification.getStatus());
+        notificationDTO.setGmtCreate(notification.getGmtCreate());
+        notificationDTO.setCommentNotificationType(CommentNotificationType.FOLLOWING);
+        //notificationDTO.setItem(commentMapper.selectByPrimaryKey(notification.getOutterId()));
         notificationDTOlist.add(notificationDTO);
     }
 
@@ -132,6 +154,7 @@ public class NotificationServiceImpl implements NotificationService {
         notificationDTO.setItem(question);
         notificationDTOlist.add(notificationDTO);
     }
+
     /**
      * 封装回复的通知
      *

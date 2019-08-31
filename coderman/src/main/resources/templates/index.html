@@ -2,91 +2,399 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>CoderMan首页</title>
-    <link rel="stylesheet" href="/index.css">
+    <meta name="keywords" content="章鱼社区"/>
+    <meta name="description" content="一个学习编程，分享生活的网站，欢迎志同道合的朋友，光临我的网站"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>章鱼社区</title>
     <link rel="stylesheet" th:href="@{/css/iconfont.css}">
-    <link rel="stylesheet" href="webjars/bootstrap/3.3.5/css/bootstrap.min.css"
-          th:href="@{/webjars/bootstrap/3.3.5/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/my.css}">
+    <link rel="stylesheet" href="webjars/bootstrap/3.3.5/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/3.3.5/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/flat-ui.min.css}">
     <script src="webjars/jquery/3.1.1/jquery.min.js" th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
-    <script src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"
-            th:src="@{/webjars/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/flat-ui.min.js}"></script>
+    <script src="webjars/bootstrap/3.3.5/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+    <script th:src="@{/layer/layer.js}"></script>
+    <script>
+        $(function () {
+            $('#myTabs a').click(function (e) {
+                $("#sortby_param").attr("sortby", this.id);
+                to_page(1);
+                $(this).tab('show');
+            });
+            $("#types li a").click(function () {
+                $("#tag_param").val("");
+                $(".tagname").css({color:"#303030"})
+                $("#category_param").val(this.id);
+                to_page(1);
+                $("#types li").removeClass("active");
+                $($(this).parent()).addClass("active");
+                return false;
+            })
+        })
+    </script>
 
 </head>
 <body>
 <!--引入导航条-->
 <div th:insert="~{navbar :: navbar}"></div>
+<div class="header"></div>
+<div class="container">
+    <ul class="list " id="types">
+        <li class="active"><a id="category-0" th:href="@{/category=0}">全部</a></li>
+        <li>
+            <a id="1" th:href="@{/?category=1}">提问</a>
+        </li>
+        <li>
+            <a id="2" th:href="@{/?category=2}"> 分享</a>
+        </li>
+        <li>
+            <a id="3" th:href="@{/?category=3}">讨论</a>
+        </li>
+        <li>
+            <a id="4" th:href="@{/?category=4}">建议</a>
+        </li>
+        <li>
+            <a id="5" th:href="@{/?category=5}">Bug</a>
+        </li>
+    </ul>
+</div>
 <!--内容部分-->
 <div class="container main">
-    <div class="row" style="margin-right:10px;margin-left: 10px;">
-        <div class="col-lg-9 col-md-12 col-sm-12" >
-            <h4 style="margin-top: 20px;"><span class="glyphicon glyphicon-list"></span>发现</h4>
-            <hr>
-            <div th:each="question:${page.list}" class="media question" style="position: relative;border-right: 1px solid #eee;">
-                <div class="media-left">
-                    <a th:href="@{/people/}+${question.creator}">
-                        <img style="margin-top: 3px;margin-right: 10px;" th:class="img-rounded" width="55px" class="media-object" th:src="${question.user.avatarUrl}"
-                             th:title="${question.user.name}">
-                    </a>
-                </div>
-                <div class="media-body" >
-                    <h3 class="media-heading">
-                        <a style="line-height: 20px;font-family: 'Courier New'; font-size: 17px;font-weight: 600;" th:href="'/question/'+${question.id}" th:text="${question.title}"></a>
-                        <!--<span th:if="${question.viewCount>=100}" style="color: #f40;font-size: 18px;" class="iconfont icon-remen"></span>-->
-                    </h3>
-                    <span style="font-size: 13px;color: #999999">
-                        <span th:text="${question.user.name}"></span> • 发布了置顶文章 •
-                        <span style="font-size: 13px;" class="iconfont icon-pinglun1" th:text="${question.commentCount}"></span>人评论 •
-                        <span th:text="${question.viewCount}"></span>次浏览 •
-                        <span th:text="${question.likeCount}"></span>人点赞 •
-                        发布时间:<span th:text="${#dates.format(question.gmtCreate, 'yyyy-MM-dd hh:mm:ss')}"></span>
-                    </span>
-                    <span style="float: right;color: #999999" th:text="${question.tag}"></span>
-                </div>
-                <span th:if="${question.viewCount>=50}" style="font-size: 40px;color:red; position: absolute;top: 5px;right: 0px;" class="iconfont icon-hot"></span>
-            </div>
-           <div class="container">
-               <nav aria-label="Page navigation">
-                   <ul class="pagination">
-                       <li th:if="${page.isHasPreviousPage()}">
-                           <a th:href="@{/(pageNo=${page.prePage},search=${search})}" aria-label="Previous">
-                               <span aria-hidden="true">&laquo;</span>
-                           </a>
-                       </li>
-                       <li th:each="nav:${page.navigatepageNums}" th:class="${page.pageNum==nav? 'active':'' }">
-                           <a th:href="@{/(pageNo=${nav},search=${search})}">[[${nav}]]<span class="sr-only" >(current)</span></a>
-                       </li>
-                       <li th:if="${page.isHasNextPage()}">
-                           <a th:href="@{/(pageNo=${page.nextPage},search=${search})}" aria-label="Next">
-                               <span aria-hidden="true">&raquo;</span>
-                           </a>
-                       </li>
-                   </ul>
-               </nav>
-
-           </div>
+    <div class="col-lg-9 col-md-12 col-sm-12 lefwrapper">
+        <div>
+            <p><span class="fui-list-thumbnailed"></span>&nbsp;&nbsp;<strong>发现</strong></p>
         </div>
-        <div class="col-lg-3 col-md-12 col-sm-12 rightwrapper">
-
-            <!--<img th:width="100" th:src="@{/images/pic_logo_1083b8804.png}">-->
-            <!--<img th:width="100" th:src="@{/images/u=1996801061,833160828&fm=26&gp=0.jpg}">-->
-            <h4>扫一扫:<span class="iconfont icon-QR"></span></h4>
-            <hr>
-           <img th:width="100" th:src="@{/images/wx1.png}">&nbsp;&nbsp;
-            <img th:width="100" th:src="@{/images/zf.png}">
-            <hr>
-            <ul class="list-group">
-                <li class="list-group-item"><span class="iconfont icon-touxiang"></span>&nbsp;昵称:小章鱼</li>
-                <li class="list-group-item"><span class="iconfont icon-qq"></span>&nbsp;qq:3053161401</li>
-                <li class="list-group-item"><span class="glyphicon glyphicon-phone-alt"></span>&nbsp;电话:15079437282</li>
-                <li class="list-group-item"><span class="iconfont icon-weidudianjihou"></span>&nbsp;邮件:3053161401@gmail.com
-                </li>
-                <li class="list-group-item"><span style="font-size: 19px;" class="iconfont icon-weibo"></span>&nbsp;微博:30531614@webozhang
-                </li>
+        <ul class="nav nav-tabs " id="myTabs">
+            <li class="active"><a id="all">全部</a></li>
+            <li>
+                <a id="weekhot">周热门</a>
+            </li>
+            <li>
+                <a id="monthhot">月热门</a>
+            </li>
+            <li>
+                <a id="zerohot">零回复</a>
+            </li>
+        </ul>
+        <div id="question_wrapper">
+        </div>
+        <span class="page_info-area" style="font-size: 12px;"></span>
+        <nav aria-label="Page navigation" style="font-size: 12px;">
+            <ul class="pagination">
             </ul>
+        </nav>
+    </div>
+    <div class="col-lg-3 col-md-12 col-sm-12 rightwrapper">
+        <small>站长:&nbsp;<a style="text-decoration: none;color: #303030;" href="https://github.com/zykzhangyukang?tab=repositories" title="他的Github">
+            <span style="font-size: 22px;" class="iconfont icon-github3"></span></a></small>
+        <hr>
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+            </ol>
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <img src="https://qiniu.cuiqingcai.com/wp-content/uploads/2019/06/4681561704146_.pic_hd.jpg" alt="...">
+                    <div class="carousel-caption">
+                    </div>
+                </div>
+                <div class="item">
+                    <img src="https://qiniu.cuiqingcai.com/wp-content/uploads/2019/07/WX20190726-073821-e1564097980650.png" alt="...">
+                    <div class="carousel-caption">
+                    </div>
+                </div>
+                <div class="item">
+                    <img src="https://qiniu.cuiqingcai.com/wp-content/uploads/2019/04/601554968669_.pic_hd.jpg" alt="...">
+                    <div class="carousel-caption">
+                    </div>
+                </div>
+            </div>
+            <hr>
+        <small>最新用户</small>
+        <ul id="userlist" class="list-group">
+        </ul>
+        <small>热门推荐</small>
+        <!--build__questions-->
+        <ul class="list-group rightlist" id="recommend_wrapper" style="margin: 0px;padding: 0px;">
+        </ul>
+        <small>最近更新</small>
+        <!--build__questions-->
+        <ul class="list-group rightlist" id="newquestions_wrapper" style="margin: 0px;padding: 0px;">
+        </ul>
+            <hr>
+        <!--tag-->
+        <small><span class="iconfont icon-remen" style="color:#f40;"></span>最新标签</small>
+        <div style="padding: 5px 0px;" class="tag_wrapper col-lg-12 col-md-12 col-sm-12">
         </div>
+
     </div>
 </div>
-
-
+</div>
+<img title="回到顶部" style="width: 32px; cursor:pointer;display: none; height: 32px;" class="footer" id="gotoTop" src="http://image.wenzhihuai.com/images/move-up.png" alt="">
+<form id="search_form">
+    <input type="hidden" name="tag" id="tag_param" th:value="${tag}">
+    <input type="hidden" name="search" id="search_param" th:value="${search}">
+    <input type="hidden" name="sortby" id="sortby_param" th:value="${sortby}">
+    <input type="hidden" name="category" id="category_param" th:value="${category}">
+</form>
+<form id="chat_form">
+    <input type="hidden" name="xlm_uid" id="xlm_uid" th:value="${session.xlm_uid}">
+    <input type="hidden" name="xlm_name" id="xlm_name" th:value="${session.xlm_name}">
+    <input type="hidden" name="xlm_avatar" id="xlm_avatar" th:value="${session.xlm_avatar}">
+    <input type="hidden" name="xlm_avatar" id="xlm_time" th:value="${session.xlm_time}">
+    <input type="hidden" name="xlm_hash" id="xlm_hash" th:value="${session.xlm_hash}">
+</form>
+<div th:insert="~{navbar :: navbottom}"></div>
 </body>
 </html>
+
+<script>
+    $(function () {
+        //总记录数
+        var totalpageo;
+        //当前页
+        var currentpage;
+        //到第几页,默认到第一页
+        to_page(1);
+        //加载右边的数据
+        build_right_list();
+    });
+    $('.carousel').carousel({
+        interval: 1900
+    })
+
+    //构建最新用户
+    function build_right_list() {
+        $.ajax({
+            type: "GET",
+            url: "/loadRightList",
+            data: {
+                "time": new Date()
+            },
+            success: function (data) {
+                if (data.code == "1000") {
+                    build_user_list(data);
+                    build_hot_tags(data);
+                    build_new_questions(data);
+                    build_recommend_questions(data);
+                } else {
+
+                }
+            }
+        })
+    }
+    function build_new_questions(data) {
+        $("#newquestions_wrapper").empty();
+        $.each(data.extend.newQuestions, function (index, item) {
+            var li=$("<li class='list-group-item'  class=\"\"><a title='查看全文' href='/question/"+item.id+"'>"+item.title+"</a></li>");
+            li.appendTo( $("#newquestions_wrapper"));
+        });
+    }
+    function build_recommend_questions(data) {
+        $("#recommend_wrapper").empty();
+        $.each(data.extend.recommend, function (index, item) {
+            var li=$("<li class='list-group-item'  class=\"\"><a title='查看全文' href='/question/"+item.id+"' >"+item.title+"</a></li>");
+            li.appendTo( $("#recommend_wrapper"));
+        });
+    }
+    function build_hot_tags(data) {
+        $(".tag_wrapper").empty();
+        $.each(data.extend.tags, function (index, item) {
+            var hot_tag = $("  <div class=\"hot_tag\">\n" +
+                "            <div><a  class='tagname' id='"+item+"' onclick='setTag(this)' ><span>" + item + "</span></a></div>\n" +
+                "        </div>");
+            hot_tag.appendTo($(".tag_wrapper"));
+        });
+    }
+    function setTag(e) {
+        $("#tag_param").val(e.id);
+        $(".tagname").css({color:"#303030"})
+        e.style.color="#f40";
+        to_page(1);
+        return false;
+    }
+
+    function build_user_list(data) {
+        //清空
+        $("#userlist").empty();
+        var users = data.extend.userList;
+        $.each(users, function (index, item) {
+            var userli = $("<li class=\"list-group-item\" style=\"list-style: none;\">\n" +
+                "             <a style='margin-right: 5px;' href=\"/people?id=" + item.id + "\"><img class=\"img-circle\" width=\"30\" src=\"" + item.avatarUrl + "\"></a>\n" +
+                "                 <small style='font-size: 13px;color: #303030;'>" + item.name + "</small>\n" +
+                "                  <small></small>\n" +
+                "              <small  style='float: right;font-size: 11px;color: #666;'>问题:"+item.questionCount+"&nbsp;&nbsp;&nbsp;粉丝："+item.fansCount+"</small>\n" +
+                "         </li>\n")
+            userli.appendTo("#userlist");
+        });
+    }
+
+    //到问题页第几页
+    function to_page(pageno) {
+        //加载完成之后,发送请求到服务器,拿到jason数据,构建列表数据
+        var url = "/loadQuestionList";
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {
+                "pageNo": pageno,
+                "pageSize": 20,
+                "tag": $("#tag_param").val(),
+                "search": $("#search_param").val(),
+                "sortby": $("#sortby_param").attr("sortby"),
+                "category": $("#category_param").val(),
+                contentType: "application/json;charset=UTF-8"
+            },
+            beforeSend: function () {
+                loadingIndex = layer.msg('加载列表中', {icon: 16});
+            },
+            success: function (data) {
+                layer.close(loadingIndex);
+                if (data.code == "1000") {
+                    //构建问题列表信息
+                    build_question_list(data);
+                    //构建分页信息
+                    build_page_nav(data);
+                    $("html,body").animate({scrollTop: 0}, 1);//回到顶端
+                } else {
+                    layer.msg(data.extend.msg, {time: 2000, icon: 5, shift: 6}, function () {
+
+                    });
+                }
+            }
+        });
+
+    }
+
+    //构建分页导航
+    function build_page_nav(data) {
+        var page = data.extend.page;
+        //设置当前页
+        currentpage = page.pageNum;
+        //设置末页
+        totalpageo = page.pages;
+        $('.page_info-area').empty();
+        $(".pagination").empty();
+        $('.page_info-area').append("当前第" + page.pageNum + "页,共" + page.pages + "页,共" + page.total + "条记录")
+        //分页导航
+        var nav = $(".pagination");
+        var firstLi = $("<li></li>").append($("<a>首页</a>").attr("href", "#"));
+        var prli = $("<li></li>").append($("<a  aria-label='Previous'><span aria-hidden='true'>&laquo;</span></a>").attr("href", "#"));
+        //首页
+        firstLi.click(function () {
+            to_page(1);
+        });
+        //上一页
+        prli.click(function () {
+            var target = page.pageNum - 1;
+            target = target == 0 ? 1 : target;
+            to_page(target);
+        })
+        var lastLi = $("<li></li>").append($("<a>末页</a>").attr("href", "#"));
+        var nextli = $("<li></li>").append($("<a  aria-label='Next'><span aria-hidden='true'>&raquo;</span></a>").attr("href", "#"));
+        //末页
+        lastLi.click(function () {
+            //alert("转到:"+page.pages)
+            to_page(page.pages);
+        })
+        //下一页
+        nextli.click(function () {
+            var target = page.pageNum + 1;
+            target = target < page.pages ? target : page.pages;
+            to_page(target);
+        })
+        nav.append(prli);
+
+        $.each(data.extend.page.navigatepageNums, function (index, item) {
+            var li = $("<li></li>").append($("<a>" + item + "</a>").attr("href", "#"));
+            if (data.extend.page.pageNum == item) {
+                li.addClass("active");
+            }
+            //点击翻页
+            li.click(function () {
+                $(".pagination>li").removeClass("active");
+                $(this).addClass("active");
+                to_page(item);
+                return false;
+            })
+            nav.append(li);
+        })
+        nav.append(nextli);
+
+    }
+
+    //构建questions列表
+    function build_question_list(data) {
+        //清空
+        $("#question_wrapper").empty();
+        var questions = data.extend.page.list;
+        $.each(questions, function (index, item) {
+            var question = $("<div style='margin-top: 20px;' class=\"question media\">\n" +
+                "  <div class=\"  media-left \">\n" +
+                "    <a href=\"/people?id=" + item.creator + "\">\n" +
+                "      <img style='width: 40px' class=\"img-rounded\" src=\" " + item.user.avatarUrl + " \" alt=\"...\">\n" +
+                "    </a>\n" +
+                "  </div>\n" +
+                "  <div class=\"media-body\">\n" +
+                "    <a  href='/question/" + item.id + "' class=\"media-heading question_title\">" + item.title + "</a>\n" +
+                "  <br>  <span style=\"font-size: 11px;\">\n" +
+                "                         <span>" + item.user.name + "</span> •\n" +
+                "                  <span style=\"font-size: 11px;\" class=\"iconfont icon-pinglun1\">" + item.commentCount + "</span>人评论 •\n" +
+                "                     <span>" + item.viewCount + "</span>次浏览 •\n" +
+                "                        <span>" + item.likeCount + "</span>人点赞 •\n" +
+                "                        发布于:<span id=\"publish_time\">" + item.showTime + "</span>\n" +
+                "            </span>\n" +
+                "    <span style=\"float: right;color: #999999;font-size: 10px !important;\">\n" +
+                "      <small class=\"\">" + item.typeName + "</small>\n\n" +
+                "  </div>\n" +
+                "</div>")
+            question.appendTo("#question_wrapper");
+        })
+    }
+</script>
+<script>
+    $(function () {
+        $("#me").click(function () {
+            $(this).toggleClass("open");
+        })
+    })
+
+    function gotoTop(minHeight) {
+        // 定义点击返回顶部图标后向上滚动的动画
+        $("#gotoTop").click(
+            function () {
+                $('html,body').animate({scrollTop: '0px'}, 'slow');
+            })
+
+        // 获取页面的最小高度，无传入值则默认为600像素
+        minHeight ? minHeight = minHeight : minHeight = 600;
+        // 为窗口的scroll事件绑定处理函数
+        $(window).scroll(function () {
+            // 获取窗口的滚动条的垂直滚动距离
+            var s = $(window).scrollTop();
+            // 当窗口的滚动条的垂直距离大于页面的最小高度时，让返回顶部图标渐现，否则渐隐
+            if (s > minHeight) {
+                $("#gotoTop").fadeIn(500);
+            } else {
+                $("#gotoTop").fadeOut(500);
+            }
+            ;
+        });
+    };
+    gotoTop();
+
+</script>
+<script>
+    var xlm_wid = '14876';
+    var xlm_url = 'https://www.xianliao.me/';
+    var xlm_uid = $("#xlm_uid").val(); //登录用户的ID，游客使用0
+    var xlm_name = $("#xlm_name").val(); //登录用户的用户名，游客使用空字符
+    var xlm_avatar = $("#xlm_avatar").val();//登录用户的头像URL，游客使用空字符
+    var xlm_time = $("#xlm_time").val(); //现在服务器的Linux timestamp, 如：1481673726
+    var xlm_hash = $("#xlm_hash").val(); //为保障用户的登录安全，xlm_hash须在后台生成，见下附的xlm_hash的生成方法
+</script>
+<script type='text/javascript' charset='UTF-8' src='https://www.xianliao.me/embed.js'></script>

@@ -1,0 +1,121 @@
+body, html {
+    width: 100%;
+    padding: 0px;
+    height: 100%;
+    margin: 0px;
+    overflow-y: auto;
+    background-color: #fff;
+    background-image: url("/bg.jpg");
+}
+
+
+.main {
+    background-color: #fff;
+    border-radius: 10px;
+    padding-top: 20px;
+    overflow: hidden;
+}
+.center {
+    text-align: center;
+}
+.pagination {
+    border-bottom: 20px;
+    left: 10px;
+    background: #cccccc;
+}
+.hot_tag {
+    display: inline-block;
+    line-height: 28px;
+    padding: 0 8px;
+    white-space: nowrap;
+    background: #cbdbfb;
+    color: #265899;
+    margin: 0 8px 14px 0;
+    font-size: 14px;
+}
+
+.hot_tag a {
+    display: inline-block;
+    line-height: 28px;
+    white-space: nowrap;
+    background: #cbdbfb;
+    color: #265899;
+}
+
+.hot_tag:hover {
+    transition: all 400ms;
+    cursor: pointer;
+}
+
+
+.nq {
+    overflow: hidden; /*超出部分隐藏*/
+    text-overflow: ellipsis; /* 超出部分显示省略号 */
+    white-space: nowrap; /*规定段落中的文本不进行换行 */
+}
+
+.question {
+    margin-left: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.lefwrapper {
+    border-right: 1px solid #eee;
+    border-left: 1px solid #eee;
+}
+
+.list {
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.list li {
+    float: left;
+    position: relative;
+    height: 35px;
+    list-style: none;
+    line-height: 35px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 5px;
+    float: left;
+    margin-right: 25px;
+
+}
+
+#myTabs a {
+    cursor: pointer;
+}
+.carousel-inner img{
+    height:120px !important;
+}
+.list li a {
+    display: block;
+    width: 100%;
+    padding: 0px 10px;
+    color: #303030;
+    font-weight: 600;
+}
+.list .active a{
+    color: #FFFFFF!important;
+}
+.list .active{
+    background-color: #16a085 !important;
+}
+.rightlist{margin: 0px;padding: 0px;}
+.rightlist li{font-size: 12px; cursor:pointer; color: #3d3d3d;overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;}
+.rightlist li a{
+    font-family:'楷体';
+    color: #303030;
+    font-weight: 600;
+}
+.rightlist li a:hover{color: #0F192A;}
+.question_title{
+    font-family: 宋体;
+}
+

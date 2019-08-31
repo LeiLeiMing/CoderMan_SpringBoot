@@ -19,9 +19,31 @@ public class Question {
 
     private Integer creator;
 
+    private Integer category;
+
     private String description;
 
     private User user;
+
+    private String showTime;
+
+    private String typeName;
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    public String getShowTime() {
+        return showTime;
+    }
+
+    public void setShowTime(String showTime) {
+        this.showTime = showTime;
+    }
 
     public User getUser() {
         return user;
@@ -101,6 +123,14 @@ public class Question {
 
     public void setCreator(Integer creator) {
         this.creator = creator;
+    }
+
+    public Integer getCategory() {
+        return category;
+    }
+
+    public void setCategory(Integer category) {
+        this.category = category;
     }
 
     public String getDescription() {

@@ -2,10 +2,11 @@ package com.zhangyu.coderman.test;
 
 import com.zhangyu.coderman.dao.QuestionExtMapper;
 import com.zhangyu.coderman.dao.QuestionMapper;
+import com.zhangyu.coderman.dao.UserExtMapper;
 import com.zhangyu.coderman.dao.UserMapper;
 import com.zhangyu.coderman.modal.Question;
 import com.zhangyu.coderman.modal.User;
-import org.apache.ibatis.session.SqlSession;
+import com.zhangyu.coderman.utils.DatesUtil;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +28,9 @@ public class TestMybatis {
     private UserMapper userMapper;
 
     @Autowired
+    private UserExtMapper userExtMapper;
+
+    @Autowired
     private QuestionMapper questionMapper;
 
     @Autowired
@@ -38,10 +42,24 @@ public class TestMybatis {
     @Autowired
     private ApplicationContext ctx=null;
 
+
+    @Test
+    public void testgetnewusers(){
+        List<User> newUserList = userExtMapper.findNewUserList(10);
+        System.out.println(newUserList);
+    }
     @Test
     public void getPageBySearch(){
-        List<Question> questions = questionExtMapper.listQuestionWithUserBySearch("java");
-        System.out.println(questions.size());
+        //List<Question> questions = questionExtMapper.listQuestionWithUserBySearch("java","java", questionQueryDTO.getCategory());
+        //System.out.println(questions.size());
+    }
+    @Test
+    public void listQuestionWeekHot(){
+        long startweektime = DatesUtil.getBeginDayOfWeek().getTime();
+        long endweetime=DatesUtil.getEndDayOfWeek().getTime();
+        //List<Question> questions = questionExtMapper.listQuestionHotByTime(startweektime, endweetime, questionQueryDTO.getCategory());
+        //System.out.println(questions.size());
+
     }
 
     @Test

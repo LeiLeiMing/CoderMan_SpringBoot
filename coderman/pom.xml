@@ -92,6 +92,12 @@
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <version>1.2.5</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.aliyun.oss/aliyun-sdk-oss -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.6.0</version>
+        </dependency>
     </dependencies>
 	<build>
 		<plugins>
@@ -101,5 +107,6 @@
 			</plugin>
 		</plugins>
 	</build>
+
 
 </project>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="章鱼社区"/>
+    <meta name="description" content="一个学习编程，分享生活的网站，欢迎志同道合的朋友，光临我的网站"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>章鱼社区</title>
+    <link rel="stylesheet" th:href="@{/css/iconfont.css}">
+    <link rel="stylesheet" th:href="@{/css/my.css}">
+    <link rel="stylesheet" href="webjars/bootstrap/3.3.5/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/3.3.5/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/flat-ui.min.css}">
+    <script src="webjars/jquery/3.1.1/jquery.min.js" th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+    <script th:src="@{/js/flat-ui.min.js}"></script>
+    <script src="webjars/bootstrap/3.3.5/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+</head>
+<style>
+    body, html {
+        width: 100%;
+        padding: 0px;
+        height: 100%;
+        margin: 0px;
+        overflow-y: auto;
+        background-color: #fff;
+        background-image: url("/images/bg/bg02.png");
+    }
+    .footer {
+        position: fixed;
+        right: 50px;
+        bottom: 50px;
+        width: 54px;
+        height: 54px;
+    }
+
+    .main {
+        background-color: #fff;
+        border-radius: 10px;
+        padding-top: 20px;
+        overflow: hidden
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    .pagination {
+        background: #cccccc;
+    }
+
+    .hot_tag {
+        margin-top: 2px;
+        height: 21px;
+        min-width: 24px;
+        line-height: 21px;
+        border: 1px solid #ccc;
+        border-radius: 100px;
+        color: #4d4d4d;
+        text-align: center;
+        margin-bottom: 4px;
+        color: #4d4d4d;
+        width: 25%;
+        float: left;
+        cursor: pointer;
+        font-size: 11px;
+    }
+
+    .hot_tag a {
+        color: #999999;
+        text-decoration: none;
+    }
+
+    .hot_tag:hover {
+        color: #f40;
+        transition: all 400ms;
+        border: 1px solid #ff4400;
+    }
+
+    .nq {
+        overflow: hidden; /*超出部分隐藏*/
+        text-overflow: ellipsis; /* 超出部分显示省略号 */
+        white-space: nowrap; /*规定段落中的文本不进行换行 */
+    }
+
+    .question {
+        margin-left: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .lefwrapper {
+        border-right: 1px solid #eee;
+        border-left: 1px solid #eee;
+    }
+
+    .list {
+        margin: 0px;
+        padding: 0px;
+        overflow: hidden;
+        margin-bottom: 25px;
+    }
+
+    .list li {
+        float: left;
+        position: relative;
+        height: 35px;
+        list-style: none;
+        line-height: 35px;
+        font-size: 14px;
+        text-align: center;
+        cursor: pointer;
+        border-radius: 5px;
+        float: left;
+        margin-right: 25px;
+        background-color: #24292e;
+        margin-top: 10px;
+    }
+
+    .list .active {
+        background-color: #16a085 !important;
+    }
+
+    .list li a {
+        display: block;
+        width: 100%;
+        padding: 0px 10px;
+        color: #FFFFFF;
+    }
+</style>
+<body>
+<!--引入导航条-->
+<div th:insert="~{navbar :: navbar}"></div>
+<div class="header"></div>
+<!--内容部分-->
+<div class="container main">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 lefwrapper">
+            <div id="question_wrapper">
+            </div>
+            <span class="page_info-area"></span>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                </ul>
+            </nav>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 rightwrapper">
+            <small>站长简介:&nbsp;<a style="text-decoration: none;color: #303030;"
+                                 href="https://github.com/zykzhangyukang?tab=repositories" title="他的Github">
+                <span style="font-size: 22px;" class="iconfont icon-github3"></span></a></small>
+            <hr>
+            <ul class="list-group" style="font-size: 14px;">
+                <li class="list-group-item"><span class="iconfont icon-touxiang"></span>&nbsp;昵称:小章鱼</li>
+                <li class="list-group-item"><span class="iconfont icon-qq"></span>&nbsp;qq:3053161401</li>
+                <li class="list-group-item"><span class="glyphicon glyphicon-phone-alt"></span>&nbsp;电话:15079437282</li>
+                <li class="list-group-item"><span class="iconfont icon-weidudianjihou"></span>邮件:3053161401@qq.com</li>
+                <li class="list-group-item"><span style="font-size: 19px;" class="iconfont icon-weibo"></span>&nbsp;微博:3053161401
+                </li>
+            </ul>
+            <small>最新用户</small>
+            <ul id="userlist" class="list-group">
+            </ul>
+            <!--tag-->
+            <small><span class="iconfont icon-remen" style="color:#f40;"></span>最新标签</small>
+            <div style="padding: 5px 0px;" class="tag_wrapper col-lg-12 col-md-12 col-sm-12">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<img title="回到顶部" style="width: 32px; cursor:pointer; height: 32px;display: none;" class="footer" id="gotoTop"
+     src="http://image.wenzhihuai.com/images/move-up.png" alt="">
+<div th:insert="~{navbar :: navbottom}"></div>
+</body>
+</html>
+<script>
+    $(function () {
+        //总记录数
+        var totalpageo;
+        //当前页
+        var currentpage;
+        //到第几页,默认到第一页
+        to_page(1);
+
+    });
+    //构建最新用户
+    function build_right_list() {
+        $.ajax({
+            type: "GET",
+            url: "/loadRightPage",
+            data: {
+                "time": new Date()
+            },
+            success: function (data) {
+                if (data.code == "1000") {
+                    build_user_list(data);
+                    build_hot_tags(data)
+                } else {
+
+                }
+            }
+        })
+    }
+    function build_hot_tags(data) {
+        $(".tag_wrapper").empty();
+        $.each(data.extend.tags, function (index, item) {
+            var hot_tag = $("  <div class=\"hot_tag\">\n" +
+                "            <div><a href=\"\"><span>"+item+"</span></a></div>\n" +
+                "        </div>");
+            hot_tag.appendTo($(".tag_wrapper"));
+        });
+    }
+    function build_user_list(data) {
+        //清空
+        $("#userlist").empty();
+        var users = data.extend.userList;
+        $.each(users, function (index, item) {
+            var userli = $("<li class=\"list-group-item\" style=\"list-style: none;\">\n" +
+                "             <a href=\"/people/id=" + item.id + "\"><img class=\"img-rounded\" width=\"30\" src=\"" + item.avatarUrl + "\"></a>\n" +
+                "                 <small></small>\n" +
+                "                  <small>问题:</small>\n" +
+                "              <small>0</small>\n" +
+                "         </li>\n")
+            userli.appendTo("#userlist");
+        });
+    }
+    //到问题页第几页
+    function to_page(pageno) {
+        //加载完成之后,发送请求到服务器,拿到jason数据,构建列表数据
+        $.ajax({
+            type: "GET",
+            url: "/loadIndexData",
+            data: {
+                "pageNo": pageno,
+                "pageSize": 8,
+            },
+            success: function (data) {
+                if (data.code == "1000") {
+                    //构建问题列表信息
+                    build_question_list(data);
+                    //构建分页信息
+                    build_page_nav(data);
+                } else {
+                }
+            }
+        });
+
+    }
+
+    //构建分页导航
+    function build_page_nav(data) {
+        var page = data.extend.page;
+        //设置当前页
+        currentpage = page.pageNum;
+        //设置末页
+        totalpageo = page.pages;
+        $('.page_info-area').empty();
+        $(".pagination").empty();
+        $('.page_info-area').append("当前第" + page.pageNum + "页,共" + page.pages + "页,共" + page.total + "条记录")
+        //分页导航
+        var nav = $(".pagination");
+        var firstLi = $("<li></li>").append($("<a>首页</a>").attr("href", "#"));
+        var prli = $("<li></li>").append($("<a  aria-label='Previous'><span aria-hidden='true'>&laquo;</span></a>").attr("href", "#"));
+        //首页
+        firstLi.click(function () {
+            to_page(1);
+        });
+        //上一页
+        prli.click(function () {
+            var target = page.pageNum - 1;
+            target = target == 0 ? 1 : target;
+            to_page(target);
+        })
+        var lastLi = $("<li></li>").append($("<a>末页</a>").attr("href", "#"));
+        var nextli = $("<li></li>").append($("<a  aria-label='Next'><span aria-hidden='true'>&raquo;</span></a>").attr("href", "#"));
+        //末页
+        lastLi.click(function () {
+            //alert("转到:"+page.pages)
+            to_page(page.pages);
+        })
+        //下一页
+        nextli.click(function () {
+            var target = page.pageNum + 1;
+            target = target < page.pages ? target : page.pages;
+            to_page(target);
+        })
+        nav.append(firstLi).append(prli);
+
+        $.each(data.extend.page.navigatepageNums, function (index, item) {
+            var li = $("<li></li>").append($("<a>" + item + "</a>").attr("href", "#"));
+            if (data.extend.page.pageNum == item) {
+                li.addClass("active");
+            }
+            //点击翻页
+            li.click(function () {
+                $(".pagination>li").removeClass("active");
+                $(this).addClass("active");
+                to_page(item);
+                return false;
+            })
+            nav.append(li);
+        })
+        nav.append(nextli).append(lastLi);
+
+    }
+
+    //构建员工列表
+    function build_question_list(data) {
+        //清空
+        $("#question_wrapper").empty();
+        var questions = data.extend.page.list;
+        $.each(questions, function (index, item) {
+            var question = $("<div class=\"media\">\n" +
+                "  <div class=\"media-left\">\n" +
+                "    <a href=\"#\">\n" +
+                "      <img style='width: 50px' class=\"img-rounded\" src=\" " + item.user.avatarUrl + " \" alt=\"...\">\n" +
+                "    </a>\n" +
+                "  </div>\n" +
+                "  <div class=\"media-body\">\n" +
+                "    <a href='/question/" + item.id + "' class=\"media-heading\">" + item.title + "</a>\n" +
+                "  <br>  <span style=\"font-size: 11px;\">\n" +
+                "                         <span>" + item.user.name + "</span> •\n" +
+                "                  <span style=\"font-size: 11px;\" class=\"iconfont icon-pinglun1\">3</span>人评论 •\n" +
+                "                     <span>" + item.viewCount + "</span>次浏览 •\n" +
+                "                        <span>" + item.likeCount + "</span>人点赞 •\n" +
+                "                        发布于:<span id=\"publish_time\">" + item.showTime + "</span>\n" +
+                "            </span>\n" +
+                "    <span style=\"float: right;color: #999999;font-size: 10px !important;\">\n" +
+                "      <small class=\"label label-default\">提问</small>\n\n" +
+                "  </div>\n" +
+                "</div>")
+            question.appendTo("#question_wrapper");
+        })
+    }
+</script>
+<script>
+    $(function () {
+        $("#me").click(function () {
+            $(this).toggleClass("open");
+        })
+    })
+
+    function gotoTop(minHeight) {
+        // 定义点击返回顶部图标后向上滚动的动画
+        $("#gotoTop").click(
+            function () {
+                $('html,body').animate({scrollTop: '0px'}, 'slow');
+            })
+
+        // 获取页面的最小高度，无传入值则默认为600像素
+        minHeight ? minHeight = minHeight : minHeight = 600;
+        // 为窗口的scroll事件绑定处理函数
+        $(window).scroll(function () {
+            // 获取窗口的滚动条的垂直滚动距离
+            var s = $(window).scrollTop();
+            // 当窗口的滚动条的垂直距离大于页面的最小高度时，让返回顶部图标渐现，否则渐隐
+            if (s > minHeight) {
+                $("#gotoTop").fadeIn(500);
+            } else {
+                $("#gotoTop").fadeOut(500);
+            }
+            ;
+        });
+    };
+    gotoTop();
+
+</script>
+<script>
+    var xlm_wid = '14876';
+    var xlm_url = 'https://www.xianliao.me/';
+    var xlm_uid = $("#xlm_uid").val(); //登录用户的ID，游客使用0
+    var xlm_name = $("#xlm_name").val(); //登录用户的用户名，游客使用空字符
+    var xlm_avatar = $("#xlm_avatar").val();//登录用户的头像URL，游客使用空字符
+    var xlm_time = $("#xlm_time").val(); //现在服务器的Linux timestamp, 如：1481673726
+    var xlm_hash = $("#xlm_hash").val(); //为保障用户的登录安全，xlm_hash须在后台生成，见下附的xlm_hash的生成方法
+</script>
+<script type='text/javascript' charset='UTF-8' src='https://www.xianliao.me/embed.js'></script>

@@ -12,6 +12,7 @@
         <result column="view_count" property="viewCount"/>
         <result column="like_count" property="likeCount"/>
         <result column="comment_count" property="commentCount"/>
+        <result column="category" property="category"/>
         <association javaType="com.zhangyu.coderman.modal.User" property="user">
             <result column="account" property="accountId"/>
             <result column="name" property="name"/>
@@ -37,6 +38,7 @@
         <result column="view_count" property="viewCount"/>
         <result column="like_count" property="likeCount"/>
         <result column="comment_count" property="commentCount"/>
+        <result column="category" property="category"/>
         <association javaType="com.zhangyu.coderman.modal.User" property="user">
             <result column="account" property="accountId"/>
             <result column="name" property="name"/>
@@ -53,47 +55,103 @@
     </resultMap>
     <select id="findQuestionWithUserById" resultMap="question_user_map_userid"
             resultType="com.zhangyu.coderman.modal.Question">
-    SELECT q.id qid, q.title,q.description,q.gmt_create qct ,q.gmt_modified qmt,tag,q.creator,q.view_count,q.like_count,q.comment_count
+    SELECT q.id qid, q.title,q.description,q.gmt_create qct ,q.gmt_modified qmt,tag,
+    q.creator,q.view_count,q.like_count,q.comment_count
+    ,q.category
     ,u.id uid,u.account_id account,u.name,u.token,
     u.gmt_create uct,u.gmt_modified umt,u.avatar_url,u.bio,u.location,u.company
-    FROM question q ,USER u
+    FROM question q ,user u
     WHERE q.creator=u.id and q.id=#{id}
     ORDER  by qct DESC
   </select>
     <select id="listQuestionWithUserByUserId" resultMap="question_user_map_userid"
             resultType="com.zhangyu.coderman.modal.Question">
     SELECT q.id qid, q.title,q.description,q.gmt_create qct ,q.gmt_modified qmt,tag,q.creator,q.view_count,q.like_count,q.comment_count
-    ,u.id uid,u.account_id account,u.name,u.token,
+    ,q.category,u.id uid,u.account_id account,u.name,u.token,
     u.gmt_create uct,u.gmt_modified umt,u.avatar_url,u.bio,u.location,u.company
-    FROM question q ,USER u
+    FROM question q ,user u
     WHERE q.creator=u.id and q.creator=#{id}
     ORDER  by qct DESC
   </select>
     <select id="listQuestionWithUser" resultMap="question_user_map" resultType="com.zhangyu.coderman.modal.Question">
     SELECT q.id qid, q.title,q.description,q.gmt_create qct ,q.gmt_modified qmt,tag,q.creator,q.view_count,q.like_count,q.comment_count
-    ,u.id uid,u.account_id account,u.name,u.token,
+    ,q.category,u.id uid,u.account_id account,u.name,u.token,
     u.gmt_create uct,u.gmt_modified umt,u.avatar_url,u.bio,u.location,u.company
-    FROM question q ,USER u
+    FROM question q ,user u
     WHERE q.creator=u.id
     ORDER  by qct DESC
   </select>
-
+    <select id="listQuestionWithUserBycategory" resultMap="question_user_map" resultType="com.zhangyu.coderman.modal.Question">
+    SELECT q.id qid, q.title,q.description,q.gmt_create qct ,q.gmt_modified qmt,tag,q.creator,q.view_count,q.like_count,q.comment_count
+    ,q.category,u.id uid,u.account_id account,u.name,u.token,
+    u.gmt_create uct,u.gmt_modified umt,u.avatar_url,u.bio,u.location,u.company
+    FROM question q ,user u
+    WHERE q.creator=u.id and q.category=#{category}
+    ORDER  by qct DESC
+  </select>
     <select id="listQuestionWithUserBySearch" resultMap="question_user_map"
             resultType="com.zhangyu.coderman.modal.Question">
         SELECT q.id qid, q.title,q.description,q.gmt_create qct ,q.gmt_modified
-        qmt,tag,q.creator,q.view_count,q.like_count,q.comment_count
+        qmt,tag,q.creator,q.view_count,q.like_count,q.comment_count,q.category
         ,u.id uid,u.account_id account,u.name,u.token,
         u.gmt_create uct,u.gmt_modified umt,u.avatar_url,u.bio,u.location,u.company
-        FROM question q ,USER u
+        FROM question q ,user u
         <where>
             q.creator=u.id
+            <if test="category!=null and category!=''">
+                and category = #{category}
+            </if>
             <if test="search!=null and search!=''">
                 and title regexp #{search}
             </if>
+            <if test="tag!=null and tag!=''">
+                and tag regexp #{tag}
+            </if>
+
             ORDER by qct DESC
         </where>
 
 
+    </select>
+    <select id="listQuestionHotByTime" resultMap="question_user_map"
+            resultType="com.zhangyu.coderman.modal.Question">
+        SELECT q.id qid, q.title,q.description,q.gmt_create qct ,q.gmt_modified
+        qmt,tag,q.creator,q.view_count,q.like_count,q.comment_count,q.category
+        ,u.id uid,u.account_id account,u.name,u.token,
+        u.gmt_create uct,u.gmt_modified umt,u.avatar_url,u.bio,u.location,u.company
+        FROM question q ,user u
+        <where>
+            q.creator=u.id
+            <if test = "beginTime != null and endTime != null">
+                and q.gmt_create between #{beginTime} and #{endTime}
+            </if>
+            <if test="tag!=null and tag!=''">
+                and tag regexp #{tag}
+            </if>
+            <if test="category!=null and category!=''">
+                and category = #{category}
+            </if>
+            ORDER by comment_count desc, view_count Desc ,like_count DESC
+        </where>
+    </select>
+    <select id="listQuestionZeroHot" resultMap="question_user_map"
+            resultType="com.zhangyu.coderman.modal.Question">
+        SELECT q.id qid, q.title,q.description,q.gmt_create qct ,q.gmt_modified
+        qmt,tag,q.creator,q.like_count,q.like_count,q.comment_count,q.view_count,q.category
+        ,u.id uid,u.account_id account,u.name,u.token,
+        u.gmt_create uct,u.gmt_modified umt,u.avatar_url,u.bio,u.location,u.company
+        FROM question q ,user u
+        <where>
+            q.creator=u.id
+            <if test="tag!=null and tag!=''">
+                and tag regexp #{tag}
+            </if>
+            <if test="category!=null and category!=''">
+                and category = #{category}
+            </if>
+            AND
+            comment_count=0
+        </where>
     </select>
 
 </mapper>

@@ -27,9 +27,9 @@ public class PeopleController {
     private QuestionService questionService;
 
 
-    @GetMapping("/people/{id}")
-    public String people(@PathVariable("id") String id, Map<String,Object> map,
-                         @RequestParam(name = "pageSize",defaultValue = "12") Integer pageSize,
+    @GetMapping("/people")
+    public String people(@RequestParam(name = "id",required = true) String id, Map<String,Object> map,
+                         @RequestParam(name = "pageSize",defaultValue = "5") Integer pageSize,
                          @RequestParam(name = "pageNo",defaultValue = "1") Integer pageNo,HttpServletRequest request
                          ){
         User loginUser = (User) request.getSession().getAttribute("user");
@@ -50,6 +50,7 @@ public class PeopleController {
         }else {
             throw new CustomizeException(CustomizeErrorCode.PEOPLE_DOT_HAVE);
         }
+        map.put("id",i);
         map.put("people",user);
         map.put("page",myquestionPageInfo);
         return "people";

@@ -1,6 +1,9 @@
 package com.zhangyu.coderman.intercepter;
 
+import com.zhangyu.coderman.dao.NotificationMapper;
+import com.zhangyu.coderman.modal.NotificationExample;
 import com.zhangyu.coderman.modal.User;
+import com.zhangyu.coderman.myenums.CommentStatus;
 import com.zhangyu.coderman.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,10 +13,13 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 @Component
 public class SessionInterceptor implements HandlerInterceptor{
     @Autowired
     private UserService userService;
+    @Autowired
+    private NotificationMapper notificationMapper;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse httpServletResponse, Object o) throws Exception {
         Cookie[] cookies = request.getCookies();
@@ -28,6 +34,16 @@ public class SessionInterceptor implements HandlerInterceptor{
                     }
                 }
             }
+        }
+        User user = (User) request.getSession().getAttribute("user");
+        if(user!=null){
+            //未读信息数
+            NotificationExample notificationExample = new NotificationExample();
+            NotificationExample.Criteria criteria = notificationExample.createCriteria();
+            criteria.andReceiverEqualTo((long) user.getId());
+            criteria.andStatusEqualTo(CommentStatus.UN_READ.getCode());
+            Integer unreadcount = notificationMapper.countByExample(notificationExample);
+            request.getSession().setAttribute("unreadcount",unreadcount);
         }
         return true;
     }

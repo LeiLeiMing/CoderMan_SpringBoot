@@ -1,7 +1,7 @@
 package com.zhangyu.coderman.controller;
 
 import com.zhangyu.coderman.cache.TagsCache;
-import com.zhangyu.coderman.dao.UserMapper;
+import com.zhangyu.coderman.dto.ResultTypeDTO;
 import com.zhangyu.coderman.modal.Question;
 import com.zhangyu.coderman.modal.User;
 import com.zhangyu.coderman.myenums.CustomizeErrorCode;
@@ -10,11 +10,7 @@ import com.zhangyu.coderman.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -45,57 +41,50 @@ public class PublishController {
      * @param map
      * @return
      */
+    @ResponseBody
     @PostMapping("/publish")
-    public String doPublish(@RequestParam("title") String title,
-                            @RequestParam("description") String description,
-                            @RequestParam("tag") String tag, HttpServletRequest request,
-                            @RequestParam(name = "id",required = false) Integer id,
-                            Map<String, Object> map,Model model) {
+    public ResultTypeDTO doPublish(@RequestParam("title") String title,
+                                   @RequestParam("description") String description,
+                                   @RequestParam("tag") String tag, HttpServletRequest request,
+                                   @RequestParam(name = "id",required = false) Integer id,
+                                   @RequestParam(name="category") Integer category,
+                                   Map<String, Object> map, Model model) {
         User user = (User) request.getSession().getAttribute("user");
-        map.put("title",title);
-        map.put("description",description);
-        map.put("tag",tag);
-        if(title==null||"".equals(title)){
-            map.put("msg", QuestionErrorEnum.QUESTION_HEAD_CANT_EMPTY);
-            //Tags
-            List<TagsCache> tagsCache = TagsCache.getTagsCache();
-            model.addAttribute("tagsCache",tagsCache);
-            return "/publish";
-        }
-        if(description==null||"".equals(description)){
-            map.put("msg", QuestionErrorEnum.QUESTION_DESC_CANT_EMPTY);
-            //Tags
-            List<TagsCache> tagsCache = TagsCache.getTagsCache();
-            model.addAttribute("tagsCache",tagsCache);
-            return "/publish";
-        }
-        if(tag==null||"".equals(tag)){
-            map.put("msg", QuestionErrorEnum.QUESTION_TAGS_CANT_EMPTY);
-            //Tags
-            List<TagsCache> tagsCache = TagsCache.getTagsCache();
-            model.addAttribute("tagsCache",tagsCache);
-            return "/publish";
-        }
+        //验证用户登入
         if (user == null) {
-            map.put("msg", QuestionErrorEnum.QUESTION_NEED_LOGIN);
-            //Tags
-            List<TagsCache> tagsCache = TagsCache.getTagsCache();
-            model.addAttribute("tagsCache",tagsCache);
-            return "/publish";
+            return new ResultTypeDTO().errorOf(QuestionErrorEnum.QUESTION_NEED_LOGIN);
         }
+        if(title==null||"".equals(title.trim())){
+            return new ResultTypeDTO().errorOf(QuestionErrorEnum.QUESTION_HEAD_CANT_EMPTY);
+        }
+        if(category==0){
+            return new ResultTypeDTO().errorOf(QuestionErrorEnum.Question_Category_CANT_EMPTY);
+        }
+        if(description==null||"".equals(description.trim())){
+            return new ResultTypeDTO().errorOf(QuestionErrorEnum.QUESTION_DESC_CANT_EMPTY);
+        }
+        if(tag==null||"".equals(tag.trim())){
+           return new ResultTypeDTO().errorOf(QuestionErrorEnum.QUESTION_TAGS_CANT_EMPTY);
+        }
+
         Question question = new Question();
         question.setTitle(title);
         question.setDescription(description);
         question.setTag(tag);
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
         question.setCreator(user.getId());
         question.setId(id);
+        question.setCategory(category);
 
-        questionService.saveOrUpdate(question,user.getId());
+        ResultTypeDTO result= null;
+        try {
+            result = questionService.saveOrUpdate(question,user.getId());
+        } catch (Exception e) {
+
+            return  new ResultTypeDTO().errorOf(CustomizeErrorCode.NOT_ADD_OTHER_BQ);
+        }
         //questionService.doPublish(question);
-
-        return "redirect:/";
+       // return "redirect:/";
+        return result;
     }
 
     /**
@@ -111,6 +100,7 @@ public class PublishController {
         map.put("description",question.getDescription());
         map.put("tag",question.getTag());
         map.put("id",id);
+        map.put("category",question.getCategory());
         return "publish";
     }
 

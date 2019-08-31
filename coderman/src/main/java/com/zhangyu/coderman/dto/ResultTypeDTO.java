@@ -1,6 +1,7 @@
 package com.zhangyu.coderman.dto;
 
 import com.zhangyu.coderman.myenums.CustomizeErrorCode;
+import com.zhangyu.coderman.myenums.QuestionErrorEnum;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,12 @@ public class ResultTypeDTO {
         ResultTypeDTO resultTypeDTO = new ResultTypeDTO();
         resultTypeDTO.setCode(customizeErrorCode.getCode());
         resultTypeDTO.setMessage(customizeErrorCode.getMessage());
+        return resultTypeDTO;
+    }
+    public ResultTypeDTO errorOf(QuestionErrorEnum questionErrorEnum){
+        ResultTypeDTO resultTypeDTO = new ResultTypeDTO();
+        resultTypeDTO.setCode(questionErrorEnum.getCode());
+        resultTypeDTO.setMessage(questionErrorEnum.getMsg());
         return resultTypeDTO;
     }
 

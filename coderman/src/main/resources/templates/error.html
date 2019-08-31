@@ -2,12 +2,26 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>[[${errormessage}]]</title>
     <link rel="stylesheet" href="/index.css">
     <link rel="stylesheet" href="webjars/bootstrap/3.3.5/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/3.3.5/css/bootstrap.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/editormd.preview.css}"/>
+    <link rel="stylesheet" th:href="@{/css/flat-ui.min.css}">
+    <script  th:src="@{/js/flat-ui.min.js}"></script>
 </head>
 <body>
+<style>
+    body,html{
+        width: 100%;
+        padding: 0px;
+        height: 100%;
+        margin: 0px;
+        overflow-y:auto;
+        background-color: #fff;
+        background-image: url("/images/bg/bg02.png");
+    }
+</style>
 <!--引入导航条-->
 <div th:insert="~{navbar :: navbar}"></div>
 <div class="container">
@@ -23,6 +37,8 @@
         <p><a class="btn btn-primary btn-lg" th:href="@{/}" role="button">返回首页</a></p>
     </div>
 </div>
+<!--页尾-->
+<div th:insert="~{navbar :: navbottom}"></div>
 
 <script src="webjars/jquery/3.1.1/jquery.min.js" th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
 <script src="webjars/bootstrap/3.3.5/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.5/js/bootstrap.min.js}"></script>

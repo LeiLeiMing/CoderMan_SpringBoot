@@ -11,6 +11,7 @@
     <result column="like_count" jdbcType="INTEGER" property="likeCount" />
     <result column="tag" jdbcType="VARCHAR" property="tag" />
     <result column="creator" jdbcType="INTEGER" property="creator" />
+    <result column="category" jdbcType="INTEGER" property="category" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.zhangyu.coderman.modal.Question">
     <result column="description" jdbcType="LONGVARCHAR" property="description" />
@@ -75,7 +76,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, title, gmt_create, gmt_modified, comment_count, view_count, like_count, tag, 
-    creator
+    creator, category
   </sql>
   <sql id="Blob_Column_List">
     description
@@ -132,11 +133,11 @@
     insert into question (id, title, gmt_create, 
       gmt_modified, comment_count, view_count, 
       like_count, tag, creator, 
-      description)
+      category, description)
     values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=BIGINT}, 
       #{gmtModified,jdbcType=BIGINT}, #{commentCount,jdbcType=INTEGER}, #{viewCount,jdbcType=INTEGER}, 
       #{likeCount,jdbcType=INTEGER}, #{tag,jdbcType=VARCHAR}, #{creator,jdbcType=INTEGER}, 
-      #{description,jdbcType=LONGVARCHAR})
+      #{category,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.zhangyu.coderman.modal.Question">
     insert into question
@@ -167,6 +168,9 @@
       </if>
       <if test="creator != null">
         creator,
+      </if>
+      <if test="category != null">
+        category,
       </if>
       <if test="description != null">
         description,
@@ -199,6 +203,9 @@
       </if>
       <if test="creator != null">
         #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=INTEGER},
       </if>
       <if test="description != null">
         #{description,jdbcType=LONGVARCHAR},
@@ -241,6 +248,9 @@
       <if test="record.creator != null">
         creator = #{record.creator,jdbcType=INTEGER},
       </if>
+      <if test="record.category != null">
+        category = #{record.category,jdbcType=INTEGER},
+      </if>
       <if test="record.description != null">
         description = #{record.description,jdbcType=LONGVARCHAR},
       </if>
@@ -260,6 +270,7 @@
       like_count = #{record.likeCount,jdbcType=INTEGER},
       tag = #{record.tag,jdbcType=VARCHAR},
       creator = #{record.creator,jdbcType=INTEGER},
+      category = #{record.category,jdbcType=INTEGER},
       description = #{record.description,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -275,7 +286,8 @@
       view_count = #{record.viewCount,jdbcType=INTEGER},
       like_count = #{record.likeCount,jdbcType=INTEGER},
       tag = #{record.tag,jdbcType=VARCHAR},
-      creator = #{record.creator,jdbcType=INTEGER}
+      creator = #{record.creator,jdbcType=INTEGER},
+      category = #{record.category,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -307,6 +319,9 @@
       <if test="creator != null">
         creator = #{creator,jdbcType=INTEGER},
       </if>
+      <if test="category != null">
+        category = #{category,jdbcType=INTEGER},
+      </if>
       <if test="description != null">
         description = #{description,jdbcType=LONGVARCHAR},
       </if>
@@ -323,6 +338,7 @@
       like_count = #{likeCount,jdbcType=INTEGER},
       tag = #{tag,jdbcType=VARCHAR},
       creator = #{creator,jdbcType=INTEGER},
+      category = #{category,jdbcType=INTEGER},
       description = #{description,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -335,9 +351,9 @@
       view_count = #{viewCount,jdbcType=INTEGER},
       like_count = #{likeCount,jdbcType=INTEGER},
       tag = #{tag,jdbcType=VARCHAR},
-      creator = #{creator,jdbcType=INTEGER}
+      creator = #{creator,jdbcType=INTEGER},
+      category = #{category,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
 
 </mapper>

@@ -13,6 +13,7 @@ public class QuestionDTO {
     private int likeCount;
     private int commentCount;
     private Integer creator;
+    private Integer category;
     private User user;
 
     public Integer getId() {
@@ -25,6 +26,14 @@ public class QuestionDTO {
 
     public String getTitle() {
         return title;
+    }
+
+    public Integer getCategory() {
+        return category;
+    }
+
+    public void setCategory(Integer category) {
+        this.category = category;
     }
 
     public void setTitle(String title) {

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -42,6 +43,8 @@ public class CommentController {
     @Autowired
     private CommentExtMapper commentExtMapper;
 
+    private  ArrayList<Object> likeIds = new ArrayList<>();
+
     /**
      * 评论和通知
      *
@@ -60,6 +63,10 @@ public class CommentController {
         //验证评论信息不能为空
         if (commentDTO.getContent() == null || "".equals(commentDTO.getContent().trim())) {
             return new ResultTypeDTO().errorOf(CustomizeErrorCode.COMMENT_CANT_EMPTY);
+        }
+        //验证评论的长度不能超过30个值
+        if(commentDTO.getContent().length()>50){
+            return new ResultTypeDTO().errorOf(CustomizeErrorCode.COMMENT_CONTENT_TO_MANY);
         }
         if (commentDTO.getType() == CommentType.COMMENT_ONE.getVal()) {
             Question dbQuestion = questionMapper.selectByPrimaryKey(commentDTO.getParentId());
@@ -153,6 +160,10 @@ public class CommentController {
             //throw  new CustomizeException(CustomizeErrorCode.USER_NO_LOGIN);
             return new ResultTypeDTO().errorOf(CustomizeErrorCode.USER_NO_LOGIN);
         }
+        //不能重复点赞
+        if(likeIds.contains(id)){
+            return new ResultTypeDTO().errorOf(CustomizeErrorCode.COMMENT_LIKE_TWICE);
+        }
         Comment dbComment = commentMapper.selectByPrimaryKey(id);
         if (dbComment == null) {
             throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUNT);
@@ -164,6 +175,8 @@ public class CommentController {
             }
             //点赞增加
             commentExtMapper.incLikeCount(id);
+            likeIds.add(id);
+            request.getSession().setAttribute("likeIds",likeIds);
             //通知
             Notification notification = new Notification();
             notification.setGmtCreate(System.currentTimeMillis());
